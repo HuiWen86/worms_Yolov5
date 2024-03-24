@@ -1,0 +1,27 @@
+#욜로5모델로 코랩에서 실행한 파일입니다. 
+#각 파트별로 따로 따로 실행하고 실행 결과를 확인하시는 게 좋습니다. 
+
+#1_욜로5 설치하기
+
+!git clone https://github.com/ultralytics/yolov5.git
+
+%cd /content/yolov5/
+!pip install -r requirements.txt
+
+#2_로보플로우에서 만든 데이터셋코드 입니다. 
+#욜로5아래에 생성하였고 train, valid, test 이미지가 나눠져 있습니다. 
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="iTzYlzKjbbZulw8vlWhn")
+project = rf.workspace("kimnayoung-azxmg").project("worms-puegu")
+version = project.version(2)
+dataset = version.download("yolov5")
+
+#3_학습시작 
+#옵션값은 임의 지정가능합니다. 이미지 640, 배치16, 에포크 200이며 coco128.yaml,train.py를 수정하지 않고 옵션값으로 지정하였습니다. 
+#200 에포크 한 후에 최적의 학습 결과를 best.pt에 저장하게 되는데 best.pt를 다운받아서 사용하면 됩니다.  
+
+%cd /content/yolov5/
+
+!python train.py --img 640 --batch 16 --epochs 200 --data /content/yolov5/worms-2/data.yaml --cfg ./models/yolov5s.yaml --weights yolov5s.pt --name yolov5s_results
